@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://kfkasjehedds" path="res://dash.gd" id="2_dash"]
 [ext_resource type="PackedScene" path="res://guardia.tscn" id="3_guardia"]
 [ext_resource type="Script" path="res://interactuar.gd" id="5_interactuar"]
+[ext_resource type="Script" path="res://apuntar.gd" id="6_apuntar"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
 size = Vector3(30, 0.2, 30)
@@ -62,6 +63,9 @@ script = ExtResource("2_dash")
 
 [node name="Interactuar" type="Node" parent="Personaje"]
 script = ExtResource("5_interactuar")
+
+[node name="Apuntar" type="Node" parent="Personaje"]
+script = ExtResource("6_apuntar")
 
 [node name="Caja1" type="StaticBody3D" parent="." groups=["interactivos"]]
 position = Vector3(4, 0.5, -4)
