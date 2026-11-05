@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://d1hbjw5ryve64"]
 
-[ext_resource type="Script" path="res://personaje.gd" id="1_personaje"]
-[ext_resource type="Script" path="res://dash.gd" id="2_dash"]
+[ext_resource type="Script" uid="uid://qmgeh2bmjvke" path="res://personaje.gd" id="1_personaje"]
+[ext_resource type="Script" uid="uid://kfkasjehedds" path="res://dash.gd" id="2_dash"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
 size = Vector3(30, 0.2, 30)
@@ -20,36 +20,37 @@ height = 1.75
 [sub_resource type="StandardMaterial3D" id="Material_personaje"]
 albedo_color = Color(0.25, 0.78, 0.9, 1)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=857448286]
 
-[node name="Suelo" type="StaticBody3D" parent="."]
-position = Vector3(0, -0.1, 0)
+[node name="Suelo" type="StaticBody3D" parent="." unique_id=313332717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Suelo"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Suelo" unique_id=1778738735]
 shape = SubResource("BoxShape3D_suelo")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Suelo"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Suelo" unique_id=88746001]
 mesh = SubResource("BoxMesh_suelo")
 
-[node name="Personaje" type="CharacterBody3D" parent="."]
+[node name="Personaje" type="CharacterBody3D" parent="." unique_id=313717212 node_paths=PackedStringArray("camara")]
 script = ExtResource("1_personaje")
+camara = NodePath("../Camera3D")
+prueba = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Personaje"]
-position = Vector3(0, 0.875, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Personaje" unique_id=45566804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("CapsuleShape3D_personaje")
 
-[node name="Modelo" type="MeshInstance3D" parent="Personaje"]
-position = Vector3(0, 0.875, 0)
+[node name="Modelo" type="MeshInstance3D" parent="Personaje" unique_id=1433658981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 mesh = SubResource("CapsuleMesh_personaje")
 surface_material_override/0 = SubResource("Material_personaje")
 
-[node name="Dash" type="Node" parent="Personaje"]
+[node name="Dash" type="Node" parent="Personaje" unique_id=728928896]
 script = ExtResource("2_dash")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-position = Vector3(0, 5, 8)
-rotation_degrees = Vector3(-30, 0, 0)
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1592525109]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 5, 8)
 current = true
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-50, -30, 0)
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=811988171]
+transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
