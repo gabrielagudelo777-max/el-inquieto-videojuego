@@ -6,6 +6,8 @@ enum TipoPrueba {
 	MANTENER_LA_ACCION_2_S
 }
 
+@export var camara: Camera3D
+@export var speed_correr = 6.0
 @export var speed_caminar = 3.0
 @export var multiplicador = 1.0
 @export var empuje = Vector3.ZERO
@@ -15,9 +17,11 @@ enum TipoPrueba {
 
 var _ultimo_estado_dash = 0
 
+
 func _ready():
 	if prueba != TipoPrueba.NINGUNA:
 		_ejecutar_prueba.call_deferred()
+
 
 func _physics_process(delta):
 	if not is_on_floor():
@@ -25,12 +29,23 @@ func _physics_process(delta):
 	else:
 		velocity.y = 0.0
 
-	var input_dir = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	var direction = Vector3(input_dir.x, 0.0, input_dir.y).normalized()
-	velocity.x = direction.x * speed_caminar * multiplicador + empuje.x
-	velocity.z = direction.z * speed_caminar * multiplicador + empuje.z
+	var input_dir = Input.get_vector(
+		"move_left", "move_right",
+		"move_up", "move_down"
+	)
+	var entrada = Vector3(input_dir.x, 0.0, input_dir.y)
+	var giro_cam = camara.global_rotation.y
+	var direction = entrada.rotated(Vector3.UP, giro_cam).normalized()
+
+	var corre = Input.is_action_pressed("correr")
+	var speed = speed_correr if corre else speed_caminar
+
+	velocity.x = direction.x * speed * multiplicador + empuje.x
+	velocity.z = direction.z * speed * multiplicador + empuje.z
+
 	move_and_slide()
 	_imprimir_estado_dash()
+
 
 func _ejecutar_prueba():
 	await get_tree().physics_frame
@@ -45,21 +60,31 @@ func _ejecutar_prueba():
 			for _cuadro in range(60):
 				await get_tree().physics_frame
 			Input.action_release("move_up")
+
 		TipoPrueba.MANTENER_LA_ACCION_2_S:
 			Input.action_press(accion_prueba)
 			for _cuadro in range(120):
 				await get_tree().physics_frame
 			Input.action_release(accion_prueba)
+
 	prueba = TipoPrueba.NINGUNA
+
 
 func _imprimir_estado_dash():
 	var dash = get_node_or_null("Dash")
 	if dash == null:
 		return
+
 	var estado_actual = dash.get("estado")
 	if estado_actual == null:
 		return
+
 	if estado_actual != _ultimo_estado_dash:
 		_ultimo_estado_dash = estado_actual
 		var nombres = ["LISTA", "ACTIVA", "RECARGA"]
-		print("cuadro ", Engine.get_physics_frames(), ": Dash.estado cambia a ", nombres[estado_actual])
+		print(
+			"cuadro ",
+			Engine.get_physics_frames(),
+			": Dash.estado cambia a ",
+			nombres[estado_actual]
+		)
