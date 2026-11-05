@@ -6,6 +6,7 @@ enum Estado { PATRULLA, PERSEGUIR }
 @export var rapidez: float = 2.0
 @export var radio_ver: float = 6.0
 @export var radio_perder: float = 9.0
+@export var vida: int = 100
 @export var puntos: Array[Vector3] = [
 	Vector3(-6, 0, -3),
 	Vector3(6, 0, -3)
@@ -79,3 +80,11 @@ func ir_a(p: Vector3) -> void:
 func _reproducir(nombre: String) -> void:
 	if anim.current_animation != nombre:
 		anim.play(nombre)
+
+
+func recibir_golpe(danio: int) -> void:
+	vida -= danio
+	print(name, ": vida ", vida)
+	if vida <= 0:
+		print(name, " destruida")
+		queue_free()

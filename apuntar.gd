@@ -3,20 +3,28 @@ extends Node
 @export var tecla: StringName = &"disparar"
 @export var alcance: float = 20.0
 @export_enum("Personaje", "Centro de la cámara", "Mouse") var desde: int = 0
+@export var danio: int = 25
+@export var cadencia: float = 0.25
 
 @onready var pj: CharacterBody3D = get_parent()
 
 var origen: Vector3 = Vector3.ZERO
+var espera: float = 0.0
 
 
-func _physics_process(_delta: float) -> void:
-	if Input.is_action_just_pressed(tecla):
+func _physics_process(delta: float) -> void:
+	espera -= delta
+	if Input.is_action_pressed(tecla) and espera <= 0.001:
+		espera = cadencia
 		var golpe: Dictionary = lanzar_rayo()
 		if golpe.is_empty():
 			print("no le dio a nada en ", alcance, " m")
-		else:
-			var distancia: float = snappedf(origen.distance_to(golpe.position), 0.01)
-			print("le dio a ", golpe.collider.name, " a ", distancia, " m")
+			return
+
+		var distancia: float = snappedf(origen.distance_to(golpe.position), 0.01)
+		print("le dio a ", golpe.collider.name, " a ", distancia, " m")
+		if golpe.collider.has_method("recibir_golpe"):
+			golpe.collider.recibir_golpe(danio)
 
 
 func lanzar_rayo() -> Dictionary:
