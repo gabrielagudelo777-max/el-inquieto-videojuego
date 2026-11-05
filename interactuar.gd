@@ -1,26 +1,24 @@
 extends Node
 
+@export var tecla = "interactuar"
+@export var alcance = 1.5
 @onready var pj = get_parent()
 
-var cuadro = 0
-
-
 func _physics_process(_delta):
-	cuadro += 1
-	if cuadro % 30 == 0:
+	if Input.is_action_just_pressed(tecla):
 		var obj = mas_cercano()
 		if obj == null:
-			print("no hay nada en el grupo interactivos")
+			print("nada a menos de ", alcance, " m")
 		else:
 			var distancia = snappedf(distancia_a(obj), 0.01)
-			print("objeto mas cercano: ", obj.name, " a ", distancia, " m")
+			print("interactua con ", obj.name, " a ", distancia, " m")
 
 
 func mas_cercano():
 	var mejor = null
 	for obj in get_tree().get_nodes_in_group("interactivos"):
 		var distancia = distancia_a(obj)
-		if mejor == null or distancia < distancia_a(mejor):
+		if distancia <= alcance and (mejor == null or distancia < distancia_a(mejor)):
 			mejor = obj
 	return mejor
 
