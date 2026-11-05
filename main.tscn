@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://qmgeh2bmjvke" path="res://personaje.gd" id="1_personaje"]
 [ext_resource type="Script" uid="uid://kfkasjehedds" path="res://dash.gd" id="2_dash"]
+[ext_resource type="PackedScene" path="res://guardia.tscn" id="3_guardia"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
 size = Vector3(30, 0.2, 30)
@@ -54,3 +55,7 @@ current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=811988171]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
+
+[node name="Guardia" parent="." node_paths=PackedStringArray("objetivo") instance=ExtResource("3_guardia")]
+position = Vector3(-6, 0, 6)
+objetivo = NodePath("../Personaje")
