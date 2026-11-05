@@ -57,5 +57,5 @@ current = true
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
 
 [node name="Guardia" parent="." node_paths=PackedStringArray("objetivo") instance=ExtResource("3_guardia")]
-position = Vector3(-6, 0, 6)
+position = Vector3(-6, 0, -3)
 objetivo = NodePath("../Personaje")
