@@ -9,6 +9,7 @@ enum TipoPrueba {
 @export var camara: Camera3D
 @export var speed_correr = 6.0
 @export var speed_caminar = 3.0
+@export var tiempo_arranque = 0.25
 @export var multiplicador = 1.0
 @export var empuje = Vector3.ZERO
 @export var accion = ""
@@ -16,6 +17,7 @@ enum TipoPrueba {
 @export var accion_prueba = "dash"
 
 var _ultimo_estado_dash = 0
+var avance = Vector3.ZERO
 
 
 func _ready():
@@ -40,8 +42,12 @@ func _physics_process(delta):
 	var corre = Input.is_action_pressed("correr")
 	var speed = speed_correr if corre else speed_caminar
 
-	velocity.x = direction.x * speed * multiplicador + empuje.x
-	velocity.z = direction.z * speed * multiplicador + empuje.z
+	var objetivo = direction * speed * multiplicador
+	var paso = speed / tiempo_arranque * delta
+	avance = avance.move_toward(objetivo, paso)
+
+	velocity.x = avance.x + empuje.x
+	velocity.z = avance.z + empuje.z
 
 	move_and_slide()
 	_imprimir_estado_dash()
@@ -49,22 +55,29 @@ func _physics_process(delta):
 
 func _ejecutar_prueba():
 	await get_tree().physics_frame
+
 	match prueba:
 		TipoPrueba.AVANZAR_Y_LA_ACCION_DESDE_EL_CUADRO_30:
 			Input.action_press("move_up")
+
 			for _cuadro in range(30):
 				await get_tree().physics_frame
+
 			Input.action_press(accion_prueba)
 			await get_tree().physics_frame
 			Input.action_release(accion_prueba)
+
 			for _cuadro in range(60):
 				await get_tree().physics_frame
+
 			Input.action_release("move_up")
 
 		TipoPrueba.MANTENER_LA_ACCION_2_S:
 			Input.action_press(accion_prueba)
+
 			for _cuadro in range(120):
 				await get_tree().physics_frame
+
 			Input.action_release(accion_prueba)
 
 	prueba = TipoPrueba.NINGUNA
@@ -82,6 +95,7 @@ func _imprimir_estado_dash():
 	if estado_actual != _ultimo_estado_dash:
 		_ultimo_estado_dash = estado_actual
 		var nombres = ["LISTA", "ACTIVA", "RECARGA"]
+
 		print(
 			"cuadro ",
 			Engine.get_physics_frames(),
