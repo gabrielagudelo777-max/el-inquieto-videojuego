@@ -6,6 +6,15 @@ enum TipoPrueba {
 	MANTENER_LA_ACCION_2_S
 }
 
+enum Estado {
+	QUIETO,
+	CAMINAR,
+	CORRER,
+	AIRE
+}
+
+const RUIDO = [0.0, 2.0, 6.0, 0.0]
+
 @export var camara: Camera3D
 @export var speed_correr = 6.0
 @export var speed_caminar = 3.0
@@ -18,6 +27,8 @@ enum TipoPrueba {
 
 var _ultimo_estado_dash = 0
 var avance = Vector3.ZERO
+var estado = Estado.QUIETO
+var ruido = 0.0
 
 
 func _ready():
@@ -50,7 +61,29 @@ func _physics_process(delta):
 	velocity.z = avance.z + empuje.z
 
 	move_and_slide()
+
+	var estado_anterior = estado
+	estado = elegir_estado()
+	ruido = RUIDO[estado]
+
+	if estado != estado_anterior:
+		print("estado ", Estado.keys()[estado], " · ruido ", ruido, " m")
+
 	_imprimir_estado_dash()
+
+
+func elegir_estado():
+	if not is_on_floor():
+		return Estado.AIRE
+
+	var rapidez = Vector2(velocity.x, velocity.z).length()
+
+	if rapidez < 0.1:
+		return Estado.QUIETO
+	if rapidez > speed_caminar + 0.1:
+		return Estado.CORRER
+
+	return Estado.CAMINAR
 
 
 func _ejecutar_prueba():
