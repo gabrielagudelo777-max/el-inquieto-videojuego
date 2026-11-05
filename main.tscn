@@ -67,6 +67,10 @@ script = ExtResource("5_interactuar")
 
 [node name="Apuntar" type="Node" parent="Personaje"]
 script = ExtResource("6_apuntar")
+alcance = 8.0
+desde = 0
+danio = 25
+cadencia = 0.5
 
 [node name="Caja1" type="StaticBody3D" parent="." groups=["interactivos"]]
 position = Vector3(4, 0.5, -4)
