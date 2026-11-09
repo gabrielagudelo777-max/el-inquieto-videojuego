@@ -6,6 +6,7 @@ enum Estado { EN_PUESTO, INVESTIGAR, MIRAR, VOLVER }
 @export var tiempo_mirar: float = 2.0
 # Deja espacio para que el Oyente no choque con el jugador en el origen del ruido.
 @export var llega_a: float = 1.0
+@export var radio_aviso: float = 5.0
 
 var estado: Estado = Estado.EN_PUESTO
 var puesto: Vector3 = Vector3.ZERO
@@ -66,9 +67,22 @@ func cambiar_a(nuevo_estado: Estado) -> void:
 
 
 func oir(punto: Vector3) -> void:
+	# Se guarda antes del cambio para cortar la recursión entre vecinos.
+	var estaba_en_puesto: bool = estado == Estado.EN_PUESTO
 	ruido_en = punto
 	if estado != Estado.INVESTIGAR:
 		cambiar_a(Estado.INVESTIGAR)
+	if estaba_en_puesto:
+		avisar_a_vecinos(punto)
+
+
+func avisar_a_vecinos(punto: Vector3) -> void:
+	for otro: Node3D in get_tree().get_nodes_in_group("oyentes"):
+		if otro == self:
+			continue
+		if global_position.distance_to(otro.global_position) <= radio_aviso:
+			print(name, " avisa a ", otro.name)
+			otro.oir(punto)
 
 
 func ir_a(destino: Vector3) -> void:

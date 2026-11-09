@@ -102,3 +102,6 @@ position = Vector3(-4, 0, 0)
 
 [node name="OyenteB" parent="." instance=ExtResource("9_oyente")]
 position = Vector3(8, 0, 0)
+
+[node name="OyenteC" parent="." instance=ExtResource("9_oyente")]
+position = Vector3(-4, 0, -4.8)
