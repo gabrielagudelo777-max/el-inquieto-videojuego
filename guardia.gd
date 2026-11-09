@@ -1,10 +1,13 @@
 extends CharacterBody3D
 
-enum Estado { PATRULLAR, ESPERAR, PERSEGUIR }
+enum Estado { PATRULLAR, ESPERAR, PERSEGUIR, ATACAR, BUSCAR }
 
 @export var rapidez: float = 2.0
 @export var espera: float = 1.0
-@export var rango_vision: float = 4.0
+@export var rango_vision: float = 7.0
+@export var rango_ataque: float = 1.2
+@export var rango_perder: float = 10.0
+@export var tiempo_busqueda: float = 3.0
 @export var vida: int = 100
 @export var ruta: Array[Vector3] = [
 	Vector3.ZERO,
@@ -16,6 +19,8 @@ var puntos: Array[Vector3] = []
 var indice: int = 0
 var reloj: float = 0.0
 var jugador: Node3D
+var ultimo_visto: Vector3 = Vector3.ZERO
+var busca: float = 0.0
 
 @onready var anim: AnimationPlayer = $Modelo/AnimationPlayer
 @onready var vision: RayCast3D = $Vision
@@ -37,6 +42,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y = 0.0
 
 	reloj = maxf(reloj - delta, 0.0)
+	busca = maxf(busca - delta, 0.0)
 
 	if jugador == null:
 		frenar()
@@ -45,6 +51,9 @@ func _physics_process(delta: float) -> void:
 
 	var distancia: float = distancia_a(jugador.global_position)
 	var lo_ve: bool = _lo_ve()
+
+	if lo_ve:
+		ultimo_visto = jugador.global_position
 
 	var nuevo_estado: Estado = decidir(distancia, lo_ve)
 	if nuevo_estado != estado:
@@ -60,13 +69,32 @@ func _physics_process(delta: float) -> void:
 			frenar()
 		Estado.PERSEGUIR:
 			ir_a(jugador.global_position)
+		Estado.ATACAR:
+			velocity.x = 0.0
+			velocity.z = 0.0
+			_reproducir("attack-melee-right")
+		Estado.BUSCAR:
+			if distancia_a(ultimo_visto) > 0.1:
+				ir_a(ultimo_visto)
+			else:
+				frenar()
 
 	move_and_slide()
 
 
 func decidir(distancia: float, lo_ve: bool) -> Estado:
-	if distancia <= rango_vision and lo_ve:
+	var alerta: bool = estado == Estado.PERSEGUIR or estado == Estado.ATACAR
+	var limite: float = rango_perder if alerta else rango_vision
+
+	if lo_ve and distancia <= rango_ataque:
+		return Estado.ATACAR
+	if lo_ve and distancia <= limite:
 		return Estado.PERSEGUIR
+	if alerta:
+		busca = tiempo_busqueda
+		return Estado.BUSCAR
+	if busca > 0.001:
+		return Estado.BUSCAR
 	if reloj > 0.001:
 		return Estado.ESPERAR
 	return Estado.PATRULLAR
