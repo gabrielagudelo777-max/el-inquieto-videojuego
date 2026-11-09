@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://bnx1xp8fojr7a" path="res://interactuar.gd" id="5_interactuar"]
 [ext_resource type="Script" uid="uid://u47o6gjca3kg" path="res://apuntar.gd" id="6_apuntar"]
 [ext_resource type="Script" uid="uid://dqvdh7dhh7tfv" path="res://diana.gd" id="7_diana"]
+[ext_resource type="Script" path="res://ruido.gd" id="8_ruido"]
+[ext_resource type="PackedScene" path="res://oyente.tscn" id="9_oyente"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
 size = Vector3(30, 0.2, 30)
@@ -67,6 +69,9 @@ script = ExtResource("6_apuntar")
 alcance = 8.0
 cadencia = 0.5
 
+[node name="Ruido" type="Node" parent="Personaje"]
+script = ExtResource("8_ruido")
+
 [node name="Caja1" type="StaticBody3D" parent="." unique_id=1839391036 groups=["interactivos"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.5, -4)
 script = ExtResource("7_diana")
@@ -91,3 +96,9 @@ transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.766
 [node name="Guardia" parent="." unique_id=640307694 node_paths=PackedStringArray("objetivo") instance=ExtResource("3_guardia")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -3)
 objetivo = NodePath("../Personaje")
+
+[node name="OyenteA" parent="." instance=ExtResource("9_oyente")]
+position = Vector3(-4, 0, 0)
+
+[node name="OyenteB" parent="." instance=ExtResource("9_oyente")]
+position = Vector3(8, 0, 0)
