@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dtc24ujtckp8l"]
+
+[ext_resource type="Script" uid="uid://8n8lig4vbdni" path="res://atacante.gd" id="1_v5g4r"]
+[ext_resource type="PackedScene" uid="uid://cohl6ldr15dwh" path="res://personaje/character-male-d.glb" id="2_3ahtn"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_guardia"]
+radius = 0.35
+height = 1.75
+
+[node name="Atacante" type="CharacterBody3D" unique_id=1014107680]
+script = ExtResource("1_v5g4r")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=68064732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_guardia")
+
+[node name="Modelo" parent="." unique_id=1541422500 instance=ExtResource("2_3ahtn")]
+transform = Transform3D(-2.6, 0, -2.2729921e-07, 0, 2.6, 0, 2.2729921e-07, 0, -2.6, 0, 0, 0)
+
+[node name="Vision" type="RayCast3D" parent="." unique_id=421280378]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)

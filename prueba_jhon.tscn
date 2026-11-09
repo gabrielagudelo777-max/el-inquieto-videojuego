@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://b5ghj5smt5luf"]
+
+[ext_resource type="Script" uid="uid://qmgeh2bmjvke" path="res://personaje.gd" id="1_tlcxf"]
+[ext_resource type="Script" uid="uid://kfkasjehedds" path="res://dash.gd" id="2_r371f"]
+[ext_resource type="Script" uid="uid://bnx1xp8fojr7a" path="res://interactuar.gd" id="3_onrti"]
+[ext_resource type="Script" uid="uid://u47o6gjca3kg" path="res://apuntar.gd" id="4_w46su"]
+[ext_resource type="Script" uid="uid://dqvdh7dhh7tfv" path="res://diana.gd" id="5_0njxv"]
+[ext_resource type="Script" uid="uid://c8xulhngujhdt" path="res://camara_sigue.gd" id="6_0lre2"]
+[ext_resource type="PackedScene" uid="uid://dtc24ujtckp8l" path="res://atacante.tscn" id="7_tlcxf"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
+size = Vector3(30, 0.2, 30)
+
+[sub_resource type="BoxMesh" id="BoxMesh_suelo"]
+size = Vector3(30, 0.2, 30)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_personaje"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_personaje"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="StandardMaterial3D" id="Material_personaje"]
+albedo_color = Color(0.25, 0.78, 0.9, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_caja1"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_caja1"]
+
+[sub_resource type="StandardMaterial3D" id="Material_caja1"]
+albedo_color = Color(0.85, 0.55, 0.2, 1)
+
+[node name="Main" type="Node3D" unique_id=857448286]
+
+[node name="Suelo" type="StaticBody3D" parent="." unique_id=313332717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Suelo" unique_id=1778738735]
+shape = SubResource("BoxShape3D_suelo")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Suelo" unique_id=88746001]
+mesh = SubResource("BoxMesh_suelo")
+
+[node name="Personaje" type="CharacterBody3D" parent="." unique_id=313717212 node_paths=PackedStringArray("camara") groups=["jugador"]]
+script = ExtResource("1_tlcxf")
+camara = NodePath("../Camera3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Personaje" unique_id=45566804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_personaje")
+
+[node name="Modelo" type="MeshInstance3D" parent="Personaje" unique_id=1433658981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+mesh = SubResource("CapsuleMesh_personaje")
+surface_material_override/0 = SubResource("Material_personaje")
+
+[node name="Dash" type="Node" parent="Personaje" unique_id=728928896]
+script = ExtResource("2_r371f")
+
+[node name="Interactuar" type="Node" parent="Personaje" unique_id=463848624]
+script = ExtResource("3_onrti")
+
+[node name="Apuntar" type="Node" parent="Personaje" unique_id=928757229]
+script = ExtResource("4_w46su")
+alcance = 8.0
+cadencia = 0.5
+
+
+[node name="Caja1" type="StaticBody3D" parent="." unique_id=1663259719 groups=["interactivos"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.5, -4)
+script = ExtResource("5_0njxv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Caja1" unique_id=647216239]
+shape = SubResource("BoxShape3D_caja1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Caja1" unique_id=1149968669]
+mesh = SubResource("BoxMesh_caja1")
+surface_material_override/0 = SubResource("Material_caja1")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1592525109 node_paths=PackedStringArray("objetivo")]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 5, 8)
+current = true
+script = ExtResource("6_0lre2")
+objetivo = NodePath("../Personaje")
+distancia = Vector3(0, 5, 8)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=811988171]
+transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
+
+[node name="Atacante" parent="." unique_id=1014107680 instance=ExtResource("7_tlcxf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 6)
