@@ -7,21 +7,25 @@ enum Estado { JUGANDO, GANO, PERDIO }
 @export var tiempo_limite = 30.0
 # false: al acabarse el tiempo se pierde. true: sobrevivir gana.
 @export var gana_con_tiempo = false
+# Número de metas que hay que completar para ganar.
+@export var metas = 3
 
 
 var estado = Estado.JUGANDO
 var tiempo = 0.0
+var hechas = 0
 
 
 func _ready():
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("partida")
 	tiempo = tiempo_limite
 
 
 func _physics_process(delta):
-	# Prueba temporal del nivel 1: Enter termina la partida.
+	# Prueba temporal del nivel 2: Enter suma una meta.
 	if Input.is_action_just_pressed("ui_accept"):
-		perder("prueba")
+		avisar_meta()
 
 	if estado != Estado.JUGANDO:
 		return
@@ -32,6 +36,15 @@ func _physics_process(delta):
 			ganar()
 		else:
 			perder("se acabó el tiempo")
+
+
+func avisar_meta():
+	if estado != Estado.JUGANDO:
+		return
+	hechas += 1
+	print("meta ", hechas, " de ", metas)
+	if metas > 0 and hechas >= metas:
+		ganar()
 
 
 func ganar():
@@ -52,3 +65,4 @@ func terminar(nuevo, motivo):
 		" cuadro ", Engine.get_physics_frames(),
 		" (", motivo, ")"
 	)
+	get_tree().paused = true
