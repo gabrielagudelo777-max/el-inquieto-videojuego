@@ -6,6 +6,8 @@ enum Estado { ACERCARSE, AVISO, GOLPE, RECARGA }
 @export var rango_ataque: float = 1.8
 @export var tiempo_aviso: float = 0.5
 @export var tiempo_recarga: float = 1.0
+@export var alcance_golpe: float = 1.8
+@export var danio: int = 1
 
 var estado: Estado = Estado.ACERCARSE
 var reloj: float = 0.0
@@ -78,7 +80,15 @@ func cambiar_a(nuevo_estado: Estado) -> void:
 
 
 func golpear() -> void:
-	print(name, " golpea")
+	var distancia_actual = distancia()
+
+	if distancia_actual > alcance_golpe:
+		print(name, " falla a ", snappedf(distancia_actual, 0.01), " m")
+		return
+
+	var salud = jugador.get_node_or_null("Salud")
+	if salud != null:
+		salud.recibir_golpe(danio)
 
 
 func ir_a(destino: Vector3) -> void:
