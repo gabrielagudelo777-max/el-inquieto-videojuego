@@ -1,19 +1,21 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://b1vbvpbpyw7hg"]
 
-[ext_resource type="Script" path="res://guardia.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://personaje/character-male-d.glb" id="2_modelo"]
+[ext_resource type="Script" uid="uid://divjokdre75bu" path="res://guardia.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://cohl6ldr15dwh" path="res://personaje/character-male-d.glb" id="2_modelo"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_guardia"]
 radius = 0.35
 height = 1.75
 
-[node name="Guardia" type="CharacterBody3D"]
+[node name="Guardia" type="CharacterBody3D" unique_id=1014107680]
 script = ExtResource("1_script")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.875, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=68064732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("CapsuleShape3D_guardia")
 
-[node name="Modelo" parent="." instance=ExtResource("2_modelo")]
-rotation_degrees = Vector3(0, 180, 0)
-scale = Vector3(2.6, 2.6, 2.6)
+[node name="Modelo" parent="." unique_id=1541422500 instance=ExtResource("2_modelo")]
+transform = Transform3D(-2.6, 0, -2.2729921e-07, 0, 2.6, 0, 2.2729921e-07, 0, -2.6, 0, 0, 0)
+
+[node name="Vision" type="RayCast3D" parent="." unique_id=421280378]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
