@@ -1,26 +1,32 @@
 extends CharacterBody3D
 
-enum Estado { PATRULLAR, ESPERAR }
+enum Estado { PATRULLAR, ESPERAR, PERSEGUIR }
 
-@export var objetivo: Node3D
 @export var rapidez: float = 2.0
 @export var espera: float = 1.0
+@export var rango_vision: float = 4.0
 @export var vida: int = 100
 @export var ruta: Array[Vector3] = [
 	Vector3.ZERO,
 	Vector3(0, 0, -6)
 ]
-@onready var anim: AnimationPlayer = $Modelo/AnimationPlayer
 
 var estado: Estado = Estado.PATRULLAR
 var puntos: Array[Vector3] = []
 var indice: int = 0
 var reloj: float = 0.0
+var jugador: Node3D
+
+@onready var anim: AnimationPlayer = $Modelo/AnimationPlayer
+@onready var vision: RayCast3D = $Vision
 
 
 func _ready() -> void:
+	jugador = get_tree().get_first_node_in_group("jugador")
+
 	for desplazamiento in ruta:
 		puntos.append(global_position + desplazamiento)
+
 	_reproducir("idle")
 
 
@@ -32,26 +38,49 @@ func _physics_process(delta: float) -> void:
 
 	reloj = maxf(reloj - delta, 0.0)
 
-	var nuevo_estado: Estado = decidir()
+	if jugador == null:
+		frenar()
+		move_and_slide()
+		return
+
+	var distancia: float = distancia_a(jugador.global_position)
+	var lo_ve: bool = _lo_ve()
+
+	var nuevo_estado: Estado = decidir(distancia, lo_ve)
 	if nuevo_estado != estado:
 		estado = nuevo_estado
 		print(name, " -> ", Estado.keys()[estado], " cuadro ",
-			Engine.get_physics_frames(), " en ",
-			global_position.snappedf(0.01))
+			Engine.get_physics_frames(), " a ",
+			snappedf(distancia, 0.01), " m")
 
 	match estado:
 		Estado.PATRULLAR:
 			patrullar()
 		Estado.ESPERAR:
 			frenar()
+		Estado.PERSEGUIR:
+			ir_a(jugador.global_position)
 
 	move_and_slide()
 
 
-func decidir() -> Estado:
+func decidir(distancia: float, lo_ve: bool) -> Estado:
+	if distancia <= rango_vision and lo_ve:
+		return Estado.PERSEGUIR
 	if reloj > 0.001:
 		return Estado.ESPERAR
 	return Estado.PATRULLAR
+
+
+func _lo_ve() -> bool:
+	var pecho: Vector3 = jugador.global_position + Vector3(0, 0.9, 0)
+	vision.target_position = vision.to_local(pecho)
+	vision.force_raycast_update()
+
+	if vision.is_colliding():
+		return vision.get_collider() == jugador
+
+	return true
 
 
 func patrullar() -> void:
