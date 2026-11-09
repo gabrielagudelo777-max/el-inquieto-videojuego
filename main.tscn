@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://d1hbjw5ryve64"]
 
-[ext_resource type="Script" path="res://camara_sigue.gd" id="4_camara_sigue"]
 [ext_resource type="Script" uid="uid://qmgeh2bmjvke" path="res://personaje.gd" id="1_personaje"]
 [ext_resource type="Script" uid="uid://kfkasjehedds" path="res://dash.gd" id="2_dash"]
-[ext_resource type="PackedScene" path="res://guardia.tscn" id="3_guardia"]
-[ext_resource type="Script" path="res://interactuar.gd" id="5_interactuar"]
-[ext_resource type="Script" path="res://apuntar.gd" id="6_apuntar"]
-[ext_resource type="Script" path="res://diana.gd" id="7_diana"]
+[ext_resource type="PackedScene" uid="uid://dcnw0uni3ywm" path="res://guardia.tscn" id="3_guardia"]
+[ext_resource type="Script" uid="uid://c8xulhngujhdt" path="res://camara_sigue.gd" id="4_camara_sigue"]
+[ext_resource type="Script" uid="uid://bnx1xp8fojr7a" path="res://interactuar.gd" id="5_interactuar"]
+[ext_resource type="Script" uid="uid://u47o6gjca3kg" path="res://apuntar.gd" id="6_apuntar"]
+[ext_resource type="Script" uid="uid://dqvdh7dhh7tfv" path="res://diana.gd" id="7_diana"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_suelo"]
 size = Vector3(30, 0.2, 30)
@@ -26,10 +26,8 @@ height = 1.75
 albedo_color = Color(0.25, 0.78, 0.9, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_caja1"]
-size = Vector3(1, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_caja1"]
-size = Vector3(1, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="Material_caja1"]
 albedo_color = Color(0.85, 0.55, 0.2, 1)
@@ -48,7 +46,6 @@ mesh = SubResource("BoxMesh_suelo")
 [node name="Personaje" type="CharacterBody3D" parent="." unique_id=313717212 node_paths=PackedStringArray("camara")]
 script = ExtResource("1_personaje")
 camara = NodePath("../Camera3D")
-prueba = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Personaje" unique_id=45566804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
@@ -62,38 +59,35 @@ surface_material_override/0 = SubResource("Material_personaje")
 [node name="Dash" type="Node" parent="Personaje" unique_id=728928896]
 script = ExtResource("2_dash")
 
-[node name="Interactuar" type="Node" parent="Personaje"]
+[node name="Interactuar" type="Node" parent="Personaje" unique_id=1885214969]
 script = ExtResource("5_interactuar")
 
-[node name="Apuntar" type="Node" parent="Personaje"]
+[node name="Apuntar" type="Node" parent="Personaje" unique_id=1482402611]
 script = ExtResource("6_apuntar")
 alcance = 8.0
-desde = 0
-danio = 25
 cadencia = 0.5
 
-[node name="Caja1" type="StaticBody3D" parent="." groups=["interactivos"]]
-position = Vector3(4, 0.5, -4)
+[node name="Caja1" type="StaticBody3D" parent="." unique_id=1839391036 groups=["interactivos"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.5, -4)
 script = ExtResource("7_diana")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Caja1"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Caja1" unique_id=275310179]
 shape = SubResource("BoxShape3D_caja1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Caja1"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Caja1" unique_id=488748340]
 mesh = SubResource("BoxMesh_caja1")
 surface_material_override/0 = SubResource("Material_caja1")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1592525109 node_paths=PackedStringArray("objetivo")]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 5, 8)
+current = true
 script = ExtResource("4_camara_sigue")
 objetivo = NodePath("../Personaje")
 distancia = Vector3(0, 5, 8)
-suavizado = 3.0
-transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 5, 8)
-current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=811988171]
 transform = Transform3D(0.8660254, 0.38302222, -0.32139382, 0, 0.64278764, 0.76604444, 0.5, -0.66341394, 0.5566704, 0, 0, 0)
 
-[node name="Guardia" parent="." node_paths=PackedStringArray("objetivo") instance=ExtResource("3_guardia")]
-position = Vector3(-6, 0, -3)
+[node name="Guardia" parent="." unique_id=640307694 node_paths=PackedStringArray("objetivo") instance=ExtResource("3_guardia")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -3)
 objetivo = NodePath("../Personaje")
