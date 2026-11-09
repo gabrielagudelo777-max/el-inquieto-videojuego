@@ -1,11 +1,14 @@
 extends CharacterBody3D
 
-enum Estado { ACERCARSE, AVISO, GOLPE, RECARGA }
+enum Estado { ACERCARSE, AVISO, GOLPE, RECARGA, HUIR }
 
 @export var rapidez: float = 2.0
 @export var rango_ataque: float = 1.8
 @export var tiempo_aviso: float = 0.5
 @export var tiempo_recarga: float = 1.0
+@export var vida: float = 80.0
+@export var vida_huida: float = 30.0
+@export var danio_prueba: float = 25.0
 @export var alcance_golpe: float = 1.8
 @export var danio: int = 1
 
@@ -18,6 +21,7 @@ var jugador: Node3D
 
 func _ready() -> void:
 	jugador = get_tree().get_first_node_in_group("jugador") as Node3D
+
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -41,11 +45,19 @@ func _physics_process(delta: float) -> void:
 			golpear()
 		Estado.RECARGA:
 			frenar("idle")
+		Estado.HUIR:
+			var lejos = global_position - jugador.global_position
+			lejos.y = 0.0
+			ir_a(global_position + lejos)
 
 	move_and_slide()
 
 
 func decidir() -> Estado:
+	# La huida tiene prioridad sobre cualquier otro estado.
+	if vida <= vida_huida:
+		return Estado.HUIR
+
 	match estado:
 		Estado.ACERCARSE:
 			if distancia() <= rango_ataque:
@@ -89,6 +101,15 @@ func golpear() -> void:
 	var salud = jugador.get_node_or_null("Salud")
 	if salud != null:
 		salud.recibir_golpe(danio)
+
+
+func recibir_golpe(cuanto: float) -> void:
+	vida -= cuanto
+	print(name, " vida ", vida)
+
+	if vida <= 0.0:
+		print(name, " vencido")
+		queue_free()
 
 
 func ir_a(destino: Vector3) -> void:
